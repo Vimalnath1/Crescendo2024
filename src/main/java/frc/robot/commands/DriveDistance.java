@@ -4,44 +4,39 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj.ADIS16470_IMU;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.DriveSubsystem;
 
-public class CenterRobot extends Command {
-  /** Creates a new CenterRobot. */
+public class DriveDistance extends Command {
+  /** Creates a new DriveDistance. */
   DriveSubsystem driveTrain;
-  // ADIS16470_IMU gyroscope = new ADIS16470_IMU();
-  private PIDController turnpid;
-  double kPThetaController=1;
-  double kIThetaController=0;
-  double kDThetaController=0;
-  public CenterRobot(DriveSubsystem subsystem) {
+  double distance;
+  int direction;
+  public DriveDistance(DriveSubsystem subsystem,double meters,int way) {
     driveTrain=subsystem;
+    distance=meters;
+    direction=way;
     addRequirements(driveTrain);
-    
-    turnpid = new PIDController(kPThetaController, kIThetaController, kDThetaController);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    driveTrain.drive(0, 0, 0, false, true);
+    driveTrain.resetEncoders();
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    // double angle=Math.toRadians(gyroscope.getAngle(ADIS16470_IMU.IMUAxis.kYaw)*(Math.PI/180));
-    // double speed=turnpid.calculate(angle);
-    double speed=1.0;
-    driveTrain.drive(0, 0, speed, false, true);
+    driveTrain.drivedistance(distance, direction);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    driveTrain.drive(0, 0, 0, false, true);
+    driveTrain.drivedistance(0, 0);
   }
 
   // Returns true when the command should end.

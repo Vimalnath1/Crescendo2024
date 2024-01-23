@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -38,13 +39,15 @@ public class LineUptoTag extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    Update_Limelight();
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     // CenterRobot(driveTrain);
-    Update_Limelight();
+    driveTrain.drivedistance(Units.inchesToMeters(zdistancefromtag*0.5), 1);
   }
 
   public void Update_Limelight(){
@@ -52,20 +55,21 @@ public class LineUptoTag extends Command {
     if (tv!=0){
       xoffset=tx.getDouble(0);
       yOffset=ty.getDouble(0);
-      zdistancefromtag=getDistancefromTag(7.626, 48.125, 10, yOffset);//in inches, subject to change
+      zdistancefromtag=getDistancefromTag(8.5, 50, 15.5, yOffset);//in inches, subject to change
       xdistancefromtag=zdistancefromtag*Math.tan(Math.toRadians(xoffset));
       SmartDashboard.putNumber("LimelightX", xoffset);
       SmartDashboard.putNumber("Z-distance", zdistancefromtag);
       SmartDashboard.putNumber("X-distance", xdistancefromtag);
       
+      
 
-      if (xoffset>1 || xoffset<-1){
-      xSpeed=xcontroller.calculate(xoffset);
-      SmartDashboard.putNumber("Speed", xSpeed);
-      }
-      else{
-        xSpeed=0;
-      }
+      // if (xoffset>1 || xoffset<-1){
+      // xSpeed=xcontroller.calculate(xoffset);
+      // SmartDashboard.putNumber("Speed", xSpeed);
+      // }
+      // else{
+      //   xSpeed=0;
+      // }
       //driveTrain.drive(0, -xSpeed, 0, false,true);
     }
   }

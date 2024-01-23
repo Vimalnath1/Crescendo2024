@@ -13,6 +13,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.util.WPIUtilJNI;
 import edu.wpi.first.wpilibj.ADIS16470_IMU;
 import edu.wpi.first.wpilibj.ADIS16448_IMU.IMUAxis;
@@ -23,7 +24,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class DriveSubsystem extends SubsystemBase {
   // Create MAXSwerveModules
-  public final MAXSwerveModule m_frontLeft = new MAXSwerveModule(
+  private final MAXSwerveModule m_frontLeft = new MAXSwerveModule(
       DriveConstants.kFrontLeftDrivingCanId,
       DriveConstants.kFrontLeftTurningCanId,
       DriveConstants.kFrontLeftChassisAngularOffset);
@@ -204,22 +205,47 @@ public class DriveSubsystem extends SubsystemBase {
   }
   public void drivedistance(double distancetodrive,int direction){
     if (direction==0){ //x-direction
-      m_frontLeft.resetEncoders();
+      
       SmartDashboard.putNumber("Front left movement",m_frontLeft.getPosition().distanceMeters);
       double errorx=distancetodrive-m_frontLeft.getPosition().distanceMeters;
-      PIDController xController= new PIDController(1, 0, 0);
+      SmartDashboard.putNumber("Distance",distancetodrive);
+      SmartDashboard.putNumber("Errorx",errorx);
+      PIDController xController= new PIDController(1.3, 2, 0);
       double speedx=xController.calculate(errorx);
       drive(0, speedx, 0, false, true);
     }
     if (direction==1){ //y-direction
-      m_frontLeft.resetEncoders();
-      SmartDashboard.putNumber("Front left movement",m_frontLeft.getPosition().distanceMeters);
+      // m_frontLeft.resetEncoders();
+      SmartDashboard.putNumber("Front left movement",Units.metersToInches(m_frontLeft.getPosition().distanceMeters));
       double errory=distancetodrive-m_frontLeft.getPosition().distanceMeters;
-      PIDController yController= new PIDController(1, 0, 0);
+      SmartDashboard.putNumber("Distance",distancetodrive);
+      SmartDashboard.putNumber("Error",errory);
+      PIDController yController= new PIDController(1.3, 2, 0);
       double speedy=yController.calculate(errory);
       drive(speedy, 0, 0, false, true);
+     
+      
     }
   }
+  // public void drivemeters(double distance,MAXSwerveModule motor,int direction){
+  //   drive(0, 0, 0, false, true);
+    
+  //   if (direction==0){
+  //     double errorx=distance-motor.getPosition().distanceMeters;
+  //     SmartDashboard.putNumber("Front left movement",motor.getPosition().distanceMeters);
+  //     PIDController xController= new PIDController(1, 0, 0);
+  //     double speedx=xController.calculate(errorx);
+  //     drive(0, speedx, 0, false, true);
+  //   }
+  //   if (direction==1){ //y-direction
+  //     SmartDashboard.putNumber("Front left movement",motor.getPosition().distanceMeters);
+  //     double errory=distance-motor.getPosition().distanceMeters;
+  //     PIDController yController= new PIDController(1, 0, 0);
+  //     double speedy=yController.calculate(errory);
+  //     drive(speedy, 0, 0, false, true);
+  //   }
+    
+  // }
   /**
    * Sets the swerve ModuleStates.
    *

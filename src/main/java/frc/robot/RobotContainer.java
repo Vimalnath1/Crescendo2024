@@ -13,6 +13,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj.XboxController;
@@ -21,13 +22,18 @@ import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.CenterRobot;
+import frc.robot.commands.DefaultDrive;
+import frc.robot.commands.DriveDistance;
 import frc.robot.commands.LineUptoTag;
+import frc.robot.commands.LoadRing;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.Loader;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import java.util.List;
+import java.util.function.DoubleSupplier;
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -38,10 +44,13 @@ import java.util.List;
 public class RobotContainer {
   // The robot's subsystems
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
+  private final Loader m_loader=new Loader();
 
   // The driver's controller
   XboxController xboxcontroller = new XboxController(OIConstants.kDriverControllerPort);
   Joystick controller = new Joystick(0);
+  PS4Controller controller2=new PS4Controller(2);
+  DoubleSupplier ystick;
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -54,14 +63,28 @@ public class RobotContainer {
     m_robotDrive.setDefaultCommand(
         // The left stick controls translation of the robot.
         // Turning is controlled by the X axis of the right stick.
-        new RunCommand(
-            () -> m_robotDrive.drive(
-                MathUtil.applyDeadband(xboxcontroller.getLeftY(), OIConstants.kDriveDeadband),
-                MathUtil.applyDeadband(xboxcontroller.getLeftX(), OIConstants.kDriveDeadband),
-                MathUtil.applyDeadband(xboxcontroller.getRightX(), OIConstants.kDriveDeadband),
-                false, true),
-            m_robotDrive));
-  }
+        // new RunCommand(
+        //     () -> m_robotDrive.drive(
+        //         MathUtil.applyDeadband(xboxcontroller.getLeftY(), OIConstants.kDriveDeadband),
+        //         MathUtil.applyDeadband(xboxcontroller.getLeftX(), OIConstants.kDriveDeadband),
+        //         MathUtil.applyDeadband(xboxcontroller.getRightX(), OIConstants.kDriveDeadband),
+        //         false, true),
+        //     m_robotDrive));
+        //Test driving with triggers
+          new DefaultDrive(m_robotDrive,
+           ()->MathUtil.applyDeadband(xboxcontroller.getLeftX(), OIConstants.kDriveDeadband),
+           ()->-MathUtil.applyDeadband(xboxcontroller.getRawAxis(2), OIConstants.kDriveDeadband),
+           ()->MathUtil.applyDeadband(xboxcontroller.getRightTriggerAxis(), OIConstants.kDriveDeadband),
+           ()->MathUtil.applyDeadband(xboxcontroller.getRightX(), OIConstants.kDriveDeadband)
+           ));
+        //If it doesn't work, try this:
+        // new DefaultDrive(m_robotDrive,
+        //  ()->MathUtil.applyDeadband(xboxcontroller.getLeftX(), OIConstants.kDriveDeadband),
+        //  ()->MathUtil.applyDeadband(xboxcontroller.getLeftY(), OIConstants.kDriveDeadband),
+        //  ()->0,
+        //  ()->MathUtil.applyDeadband(xboxcontroller.getRightX(), OIConstants.kDriveDeadband)));
+          
+      }
 
   /**
    * Use this method to define your button->command mappings. Buttons can be
@@ -80,6 +103,9 @@ public class RobotContainer {
     new JoystickButton(xboxcontroller, 1).whileTrue(new LineUptoTag(m_robotDrive));
     new JoystickButton(xboxcontroller, 2).whileTrue(new RunCommand(()->m_robotDrive.getHeadings(),m_robotDrive));
     new JoystickButton(xboxcontroller, 3).whileTrue(new CenterRobot(m_robotDrive));
+    new JoystickButton(xboxcontroller, 4).whileTrue(new DriveDistance(m_robotDrive, 0.5, 0));
+    new JoystickButton(xboxcontroller, 5).whileTrue(new LoadRing(m_loader, 0.5));
+  
   }
 
   /**
