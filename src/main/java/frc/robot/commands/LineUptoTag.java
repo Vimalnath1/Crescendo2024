@@ -46,13 +46,16 @@ public class LineUptoTag extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    Update_Limelight();
     // CenterRobot(driveTrain);
-    driveTrain.drivedistance(Units.inchesToMeters(zdistancefromtag*0.5), 1);
+    // driveTrain.drivedistance(Units.inchesToMeters(zdistancefromtag*0.5), 1);
   }
 
   public void Update_Limelight(){
     double tv=table.getEntry("tv").getDouble(0.0);
     if (tv!=0){
+    double idnum= table.getEntry("tid").getDouble(0.0);
+    SmartDashboard.putNumber("April Tag Id", idnum);
       xoffset=tx.getDouble(0);
       yOffset=ty.getDouble(0);
       zdistancefromtag=getDistancefromTag(8.5, 50, 15.5, yOffset);//in inches, subject to change

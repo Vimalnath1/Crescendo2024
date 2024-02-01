@@ -7,21 +7,22 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class Shooter extends SubsystemBase {
-  /** Creates a new Shooter. */
-  CANSparkMax leftshooter;
-  CANSparkMax rightshooter;
-  public Shooter() {
-    leftshooter=new CANSparkMax(11, MotorType.kBrushless);
-    rightshooter=new CANSparkMax(12, MotorType.kBrushless);
-  }
-  public void shoot(double speed){
-    leftshooter.set(speed);
-    rightshooter.set(-speed);
+public class Mover extends SubsystemBase {
+  /** Creates a new Mover. */
+  CANSparkMax mover1;
+  CANSparkMax mover2;
+  public Mover() {
+    mover1=new CANSparkMax(9, MotorType.kBrushed);
+    mover2=new CANSparkMax(10, MotorType.kBrushed);
   }
 
+  public void move(double speed){
+    mover1.set(speed);
+    mover2.set(-speed);
+  }
   @Override
   public void periodic() {
     // This method will be called once per scheduler run

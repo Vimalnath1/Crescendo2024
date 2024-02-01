@@ -40,9 +40,9 @@ public class DefaultDrive extends Command {
     // if (yleftvalue.getAsDouble()>0){
     //   drivetrain.drive(yleftvalue.getAsDouble(), xvalue.getAsDouble(), turnvalue.getAsDouble(), false, true);
     // }
-    double yvalue=yleftvalue.getAsDouble()+yrightvalue.getAsDouble();
+    double yvalue=yrightvalue.getAsDouble()+yleftvalue.getAsDouble();
     // if (yrightvalue.getAsDouble()==0 && yleftvalue.getAsDouble()==0){
-      drivetrain.drive(yvalue, xvalue.getAsDouble(), turnvalue.getAsDouble(), false, true);
+      drivetrain.drive(-yvalue, xvalue.getAsDouble(), turnvalue.getAsDouble(), false, true);
       SmartDashboard.putNumber("Trigger Value", yvalue);
     // }
   }

@@ -45,7 +45,7 @@ public class DriveSubsystem extends SubsystemBase {
       DriveConstants.kBackRightChassisAngularOffset);
 
   // The gyro sensor
-  private final ADIS16470_IMU m_gyro = new ADIS16470_IMU();
+  public ADIS16470_IMU m_gyro = new ADIS16470_IMU();
 
   // Slew rate filter variables for controlling lateral acceleration
   private double m_currentRotation = 0.0;
@@ -208,18 +208,18 @@ public class DriveSubsystem extends SubsystemBase {
       
       SmartDashboard.putNumber("Front left movement",m_frontLeft.getPosition().distanceMeters);
       double errorx=distancetodrive-m_frontLeft.getPosition().distanceMeters;
-      SmartDashboard.putNumber("Distance",distancetodrive);
-      SmartDashboard.putNumber("Errorx",errorx);
-      PIDController xController= new PIDController(1.3, 2, 0);
+      SmartDashboard.putNumber("Distancex",Units.metersToInches(distancetodrive));
+      SmartDashboard.putNumber("Errorx",Units.metersToInches(errorx));
+      PIDController xController= new PIDController(1.3, 0, 0);
       double speedx=xController.calculate(errorx);
       drive(0, speedx, 0, false, true);
     }
-    if (direction==1){ //y-direction
+    else if (direction==1){ //y-direction
       // m_frontLeft.resetEncoders();
       SmartDashboard.putNumber("Front left movement",Units.metersToInches(m_frontLeft.getPosition().distanceMeters));
       double errory=distancetodrive-m_frontLeft.getPosition().distanceMeters;
-      SmartDashboard.putNumber("Distance",distancetodrive);
-      SmartDashboard.putNumber("Error",errory);
+      SmartDashboard.putNumber("Distance",Units.metersToInches(distancetodrive));
+      SmartDashboard.putNumber("Error",Units.metersToInches(errory));
       PIDController yController= new PIDController(1.3, 2, 0);
       double speedy=yController.calculate(errory);
       drive(speedy, 0, 0, false, true);

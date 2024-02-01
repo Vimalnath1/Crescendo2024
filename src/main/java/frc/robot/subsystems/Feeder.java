@@ -9,17 +9,14 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class Shooter extends SubsystemBase {
-  /** Creates a new Shooter. */
-  CANSparkMax leftshooter;
-  CANSparkMax rightshooter;
-  public Shooter() {
-    leftshooter=new CANSparkMax(11, MotorType.kBrushless);
-    rightshooter=new CANSparkMax(12, MotorType.kBrushless);
+public class Feeder extends SubsystemBase {
+  /** Creates a new Feeder. */
+  // CANSparkMax feeder;
+  public Feeder() {
+    // feeder=new CANSparkMax(14, MotorType.kBrushless);
   }
-  public void shoot(double speed){
-    leftshooter.set(speed);
-    rightshooter.set(-speed);
+  public void feed(double speed){
+    // feeder.set(speed);
   }
 
   @Override

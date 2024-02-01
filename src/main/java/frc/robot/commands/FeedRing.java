@@ -5,38 +5,32 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.Feeder;
 
-public class DriveDistance extends Command {
-  /** Creates a new DriveDistance. */
-  DriveSubsystem driveTrain;
-  double distanceset;
-  int direction;
-  public DriveDistance(DriveSubsystem subsystem,double meters,int way) {
-    driveTrain=subsystem;
-    distanceset=meters;
-    direction=way;
-    addRequirements(driveTrain);
+public class FeedRing extends Command {
+  /** Creates a new FeedRing. */
+  Feeder feeder;
+
+  public FeedRing(Feeder subsystem) {
+    feeder=subsystem;
+    addRequirements(feeder);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    driveTrain.drive(0, 0, 0, false, true);
-    driveTrain.resetEncoders();
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    driveTrain.drivedistance(distanceset, direction);
+    feeder.feed(0.5); //Might have to flip
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    driveTrain.drivedistance(0, 0);
+    feeder.feed(0);
   }
 
   // Returns true when the command should end.

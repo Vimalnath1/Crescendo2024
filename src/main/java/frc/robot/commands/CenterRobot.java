@@ -12,7 +12,7 @@ import frc.robot.subsystems.DriveSubsystem;
 public class CenterRobot extends Command {
   /** Creates a new CenterRobot. */
   DriveSubsystem driveTrain;
-  // ADIS16470_IMU gyroscope = new ADIS16470_IMU();
+  // ADIS16470_IMU gyroscope;
   private PIDController turnpid;
   double kPThetaController=1;
   double kIThetaController=0;
@@ -32,9 +32,9 @@ public class CenterRobot extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    // double angle=Math.toRadians(gyroscope.getAngle(ADIS16470_IMU.IMUAxis.kYaw)*(Math.PI/180));
-    // double speed=turnpid.calculate(angle);
-    double speed=1.0;
+    double angle=Math.toRadians(driveTrain.m_gyro.getAngle(ADIS16470_IMU.IMUAxis.kYaw)*(Math.PI/180));
+    double speed=turnpid.calculate(angle);
+    // double speed=1.0;
     driveTrain.drive(0, 0, speed, false, true);
   }
 
