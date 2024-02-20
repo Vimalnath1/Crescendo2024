@@ -7,22 +7,22 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
-
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class Loader extends SubsystemBase {
-  /** Creates a new Loader. */
-  // CANSparkMax loader1;
-  // CANSparkMax loader2;
-  public Loader() {
-    // loader1=new CANSparkMax(9, MotorType.kBrushed);
-    // loader2=new CANSparkMax(10, MotorType.kBrushed);
+public class Climber extends SubsystemBase {
+  /** Creates a new Climber. */
+  CANSparkMax leftclimber;
+  CANSparkMax rightclimber;
+  public Climber() {
+    leftclimber=new CANSparkMax(11, MotorType.kBrushless);
+    rightclimber=new CANSparkMax(12, MotorType.kBrushless);
   }
 
-  public void load(double speed){
-    // loader1.set(speed);
-    // loader2.set(speed);
+  public void climb(double speed){
+    leftclimber.set(speed);
+    rightclimber.set(-speed);
   }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run

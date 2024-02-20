@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.PS4Controller.Button;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
@@ -28,9 +29,10 @@ import frc.robot.commands.AutofromCenter;
 import frc.robot.commands.CenterRobot;
 import frc.robot.commands.DefaultDrive;
 import frc.robot.commands.DriveDistance;
+import frc.robot.commands.FeedRing;
 import frc.robot.commands.LineUptoTag;
-import frc.robot.commands.LoadRing;
 import frc.robot.commands.MoveLoader;
+import frc.robot.commands.RobotClimb;
 import frc.robot.commands.ShootRing;
 import frc.robot.subsystems.*;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -51,9 +53,12 @@ public class RobotContainer {
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
   private final Mover m_mover=new Mover();
   private final Shooter m_shooter=new Shooter();
+  private final Climber m_climber=new Climber();
+  private final Feeder m_feeder=new Feeder();
   private final AutofromCenter m_AutofromCenter=new AutofromCenter(m_robotDrive, m_shooter);
   private final AutoAmpSide m_AutoAmpSide=new AutoAmpSide(m_robotDrive, m_shooter);
   private final AutoSourceSide m_AutoSourceSide=new AutoSourceSide(m_robotDrive, m_shooter);
+  SendableChooser<Command> m_chooser = new SendableChooser<>();
   // The driver's controller
   XboxController xboxcontroller = new XboxController(OIConstants.kDriverControllerPort);
   Joystick controller = new Joystick(0);
@@ -66,7 +71,10 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the button bindings
     configureButtonBindings();
-
+    m_chooser.setDefaultOption("Center Auto", m_AutofromCenter);
+    m_chooser.addOption("Amp Side Auto", m_AutoAmpSide);
+    m_chooser.addOption("Source Side Auto", m_AutoSourceSide);
+    SmartDashboard.putData(m_chooser);
     // Configure default commands
     m_robotDrive.setDefaultCommand(
         // The left stick controls translation of the robot.
@@ -104,18 +112,21 @@ public class RobotContainer {
    * {@link JoystickButton}.
    */
   private void configureButtonBindings() {
-    new JoystickButton(xboxcontroller, Button.kR1.value)
-        .whileTrue(new RunCommand(
-            () -> m_robotDrive.setX(),
-            m_robotDrive));
+    // new JoystickButton(xboxcontroller, Button.kR1.value)
+    //     .whileTrue(new RunCommand(
+    //         () -> m_robotDrive.setX(),
+    //         m_robotDrive));
     new JoystickButton(xboxcontroller, 1).whileTrue(new LineUptoTag(m_robotDrive));
-    new JoystickButton(xboxcontroller, 2).whileTrue(new RunCommand(()->m_robotDrive.getHeadings(),m_robotDrive));
-    // new JoystickButton(xboxcontroller, 3).whileTrue(new CenterRobot(m_robotDrive));
-    new JoystickButton(xboxcontroller, 4).whileTrue(new DriveDistance(m_robotDrive, 0.5, 1));
-    new JoystickButton(xboxcontroller, 5).whileTrue(new ShootRing(m_shooter, 0.5)); //Load Ring (Might have to flip)
-    new JoystickButton(xboxcontroller, 6).whileTrue(new ShootRing(m_shooter, -0.5)); //Shoot Ring (Might have to flip)
+    new JoystickButton(xboxcontroller, 2).whileTrue(new ShootRing(m_shooter, -0.5)); //Shoot Ring Amp 
+    new JoystickButton(xboxcontroller, 3).whileTrue(new FeedRing(m_feeder,1));
+    new JoystickButton(xboxcontroller, 4).whileTrue(new FeedRing(m_feeder,-1));
+    new JoystickButton(xboxcontroller, 5).whileTrue(new ShootRing(m_shooter, 0.4)); //Load Ring 
+    new JoystickButton(xboxcontroller, 6).whileTrue(new ShootRing(m_shooter, -1)); //Shoot Ring Goal 
     new JoystickButton(xboxcontroller, 7).whileTrue(new MoveLoader(m_mover, 0.5)); //Drop loader (Might have to flip)
-    new JoystickButton(xboxcontroller, 8).whileTrue(new MoveLoader(m_mover, 0.5)); //Raise Loader (Might have to flip)
+    new JoystickButton(xboxcontroller, 8).whileTrue(new MoveLoader(m_mover, -0.5)); //Raise Loader (Might have to flip)
+    new JoystickButton(xboxcontroller, 9).whileTrue(new RobotClimb(m_climber, 0.5));
+    new JoystickButton(xboxcontroller, 10).whileTrue(new RobotClimb(m_climber, -0.5));
+     // new JoystickButton(xboxcontroller, 2).whileTrue(new RunCommand(()->m_robotDrive.getHeadings(),m_robotDrive));
     // new JoystickButton(xboxcontroller, 9).whileTrue(new LineUptoTag(m_robotDrive)); //This will probably be the final button for lining up. Change it to onTrue once it works
   
   }
@@ -126,17 +137,17 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    double whichauto=SmartDashboard.getNumber("Autonomous Chooser", 2);
-    if (Math.floor(whichauto)==1){
-      return m_AutoAmpSide;
-    }
-    else if (Math.floor(whichauto)==2){   //Test these they may not work
-      return m_AutofromCenter;
-    }
-    else{
-      return m_AutoSourceSide;
-    }
-
+    // double whichauto=SmartDashboard.getNumber("Autonomous Chooser", 2);
+    // if (Math.floor(whichauto)==1){
+    //   return m_AutoAmpSide;
+    // }
+    // else if (Math.floor(whichauto)==2){   //Test these they may not work
+    //   return m_AutofromCenter;
+    // }
+    // else{
+    //   return m_AutoSourceSide;
+    // }
+    return m_chooser.getSelected();
     // // An example trajectory to follow. All units in meters.
     // Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
     //     // Start at the origin facing the +X direction

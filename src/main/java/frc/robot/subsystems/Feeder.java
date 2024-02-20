@@ -11,12 +11,12 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Feeder extends SubsystemBase {
   /** Creates a new Feeder. */
-  // CANSparkMax feeder;
+  CANSparkMax feeder;
   public Feeder() {
-    // feeder=new CANSparkMax(14, MotorType.kBrushless);
+    feeder=new CANSparkMax(13, MotorType.kBrushed);
   }
   public void feed(double speed){
-    // feeder.set(speed);
+    feeder.set(speed);
   }
 
   @Override

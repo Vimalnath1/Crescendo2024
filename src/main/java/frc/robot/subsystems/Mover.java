@@ -7,21 +7,21 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
-
+import edu.wpi.first.wpilibj.motorcontrol.Spark;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Mover extends SubsystemBase {
   /** Creates a new Mover. */
-  CANSparkMax mover1;
-  CANSparkMax mover2;
+  CANSparkMax mover;
+  
   public Mover() {
-    mover1=new CANSparkMax(9, MotorType.kBrushed);
-    mover2=new CANSparkMax(10, MotorType.kBrushed);
+    mover=new CANSparkMax(14, MotorType.kBrushless);
+
   }
 
   public void move(double speed){
-    mover1.set(speed);
-    mover2.set(-speed);
+    mover.set(speed);
   }
   @Override
   public void periodic() {

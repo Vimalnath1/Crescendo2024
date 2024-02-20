@@ -14,8 +14,8 @@ public class Shooter extends SubsystemBase {
   CANSparkMax leftshooter;
   CANSparkMax rightshooter;
   public Shooter() {
-    leftshooter=new CANSparkMax(11, MotorType.kBrushless);
-    rightshooter=new CANSparkMax(12, MotorType.kBrushless);
+    leftshooter=new CANSparkMax(9, MotorType.kBrushless);
+    rightshooter=new CANSparkMax(10, MotorType.kBrushless);
   }
   public void shoot(double speed){
     leftshooter.set(speed);

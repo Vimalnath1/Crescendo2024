@@ -16,9 +16,17 @@ public class FeedWhileShooting extends ParallelCommandGroup {
   public FeedWhileShooting(Shooter shooter,Feeder feeder,double speed) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
+    if (speed>0){
     addCommands(
       new ShootRing(shooter, speed).withTimeout(1),
-      new FeedRing(feeder).withTimeout(1)
+      new FeedRing(feeder,1).withTimeout(1) //May have to negate and change times
     );
+    }
+    else{
+      addCommands(
+      new ShootRing(shooter, speed).withTimeout(1),
+      new FeedRing(feeder,-1).withTimeout(1) //May have to negate and change times
+    );
+    }
   }
 }

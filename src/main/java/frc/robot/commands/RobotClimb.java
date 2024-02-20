@@ -5,16 +5,15 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Loader;
+import frc.robot.subsystems.Climber;
 
-public class LoadRing extends Command {
-  /** Creates a new LoadRing. */
-  private Loader loader;
-  private double speed;
-  public LoadRing(Loader subsystem, double s) {
-    loader=subsystem;
-    speed=s;
-    addRequirements(loader);
+public class RobotClimb extends Command {
+  /** Creates a new RobotClimb. */
+  Climber climber;
+  double speed;
+  public RobotClimb(Climber subsystem,double s) {
+    climber=subsystem;
+    addRequirements(climber);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -25,13 +24,13 @@ public class LoadRing extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    loader.load(speed);
+    climber.climb(speed);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    loader.load(0);
+    climber.climb(0);
   }
 
   // Returns true when the command should end.

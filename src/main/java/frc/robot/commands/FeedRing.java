@@ -10,9 +10,10 @@ import frc.robot.subsystems.Feeder;
 public class FeedRing extends Command {
   /** Creates a new FeedRing. */
   Feeder feeder;
-
-  public FeedRing(Feeder subsystem) {
+  double speed;
+  public FeedRing(Feeder subsystem,double s) {
     feeder=subsystem;
+    speed=s;
     addRequirements(feeder);
     // Use addRequirements() here to declare subsystem dependencies.
   }
@@ -24,7 +25,7 @@ public class FeedRing extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    feeder.feed(0.5); //Might have to flip
+    feeder.feed(speed); //Might have to flip
   }
 
   // Called once the command ends or is interrupted.
