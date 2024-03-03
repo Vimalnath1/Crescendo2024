@@ -14,7 +14,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class Mover extends SubsystemBase {
   /** Creates a new Mover. */
   CANSparkMax mover;
-  
   public Mover() {
     mover=new CANSparkMax(14, MotorType.kBrushless);
 

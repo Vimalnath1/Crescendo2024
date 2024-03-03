@@ -18,7 +18,7 @@ public class AutoSourceSide extends SequentialCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
       new ShootRing(shooter, 0.5).withTimeout(2),
-      new DefaultDrive(drivetrain,()->0,()->0.3,()->0,()->0).withTimeout(3.5)
+      new DefaultDrive(drivetrain,()->0,()->-0.3,()->0).withTimeout(3.5)
     );
   }
 }

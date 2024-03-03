@@ -16,9 +16,9 @@ public class SpeedUptoShoot extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new ShootRing(shooter, speed).withTimeout(4),
-      new FeedWhileShooting(shooter, feeder, speed)
-
+      new ShootRing(shooter, speed).withTimeout(1),
+      new FeedWhileShooting(shooter, feeder, speed),
+      new FeedRing(feeder, 1).withTimeout(speed).withTimeout(1.25)
     );
   }
 }

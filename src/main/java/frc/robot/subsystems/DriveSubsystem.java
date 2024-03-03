@@ -200,7 +200,7 @@ public class DriveSubsystem extends SubsystemBase {
     m_rearRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
   }
   public void driveX(){
-    drive(0, 0.3, 0, false,true);
+    drive(0.3, 0, 0, false,true);
     
   }
   public void drivedistance(double distancetodrive,int direction){
@@ -217,7 +217,7 @@ public class DriveSubsystem extends SubsystemBase {
     else if (direction==1){ //y-direction
       // m_frontLeft.resetEncoders();
       SmartDashboard.putNumber("Front left movement",Units.metersToInches(m_frontLeft.getPosition().distanceMeters));
-      double errory=distancetodrive-m_frontLeft.getPosition().distanceMeters;
+      double errory=distancetodrive+m_frontLeft.getPosition().distanceMeters;
       SmartDashboard.putNumber("Distance",Units.metersToInches(distancetodrive));
       SmartDashboard.putNumber("Error",Units.metersToInches(errory));
       PIDController yController= new PIDController(1.3, 2, 0);

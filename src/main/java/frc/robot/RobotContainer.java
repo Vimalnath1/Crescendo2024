@@ -34,6 +34,7 @@ import frc.robot.commands.LineUptoTag;
 import frc.robot.commands.MoveLoader;
 import frc.robot.commands.RobotClimb;
 import frc.robot.commands.ShootRing;
+import frc.robot.commands.SpeedUptoShoot;
 import frc.robot.subsystems.*;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -51,11 +52,12 @@ import java.util.function.DoubleSupplier;
 public class RobotContainer {
   // The robot's subsystems
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
+  private final ExampleSubsystem m_sub=new ExampleSubsystem();
   private final Mover m_mover=new Mover();
   private final Shooter m_shooter=new Shooter();
   private final Climber m_climber=new Climber();
   private final Feeder m_feeder=new Feeder();
-  private final AutofromCenter m_AutofromCenter=new AutofromCenter(m_robotDrive, m_shooter);
+  private final AutofromCenter m_AutofromCenter=new AutofromCenter(m_robotDrive, m_shooter,m_feeder,m_sub);
   private final AutoAmpSide m_AutoAmpSide=new AutoAmpSide(m_robotDrive, m_shooter);
   private final AutoSourceSide m_AutoSourceSide=new AutoSourceSide(m_robotDrive, m_shooter);
   SendableChooser<Command> m_chooser = new SendableChooser<>();
@@ -79,20 +81,20 @@ public class RobotContainer {
     m_robotDrive.setDefaultCommand(
         // The left stick controls translation of the robot.
         // Turning is controlled by the X axis of the right stick.
-        // new RunCommand(
-        //     () -> m_robotDrive.drive(
-        //         MathUtil.applyDeadband(xboxcontroller.getLeftY(), OIConstants.kDriveDeadband),
-        //         MathUtil.applyDeadband(xboxcontroller.getLeftX(), OIConstants.kDriveDeadband),
-        //         MathUtil.applyDeadband(xboxcontroller.getRightX(), OIConstants.kDriveDeadband),
-        //         false, true),
-        //     m_robotDrive));
+        new RunCommand(
+            () -> m_robotDrive.drive(
+                MathUtil.applyDeadband(xboxcontroller.getLeftY(), OIConstants.kDriveDeadband),
+                MathUtil.applyDeadband(xboxcontroller.getLeftX(), OIConstants.kDriveDeadband),
+                MathUtil.applyDeadband(xboxcontroller.getRightX(), OIConstants.kDriveDeadband),
+                false, true),
+            m_robotDrive));
         //Test driving with triggers
-          new DefaultDrive(m_robotDrive,
-           ()->MathUtil.applyDeadband(xboxcontroller.getLeftX(), OIConstants.kDriveDeadband),
-           ()->-MathUtil.applyDeadband(xboxcontroller.getRawAxis(2), OIConstants.kDriveDeadband),
-           ()->MathUtil.applyDeadband(xboxcontroller.getRightTriggerAxis(), OIConstants.kDriveDeadband),
-           ()->MathUtil.applyDeadband(xboxcontroller.getRightX(), OIConstants.kDriveDeadband)
-           ));
+          // new DefaultDrive(m_robotDrive,
+          //  ()->MathUtil.applyDeadband(xboxcontroller.getLeftX(), OIConstants.kDriveDeadband),
+          //  ()->-MathUtil.applyDeadband(xboxcontroller.getRawAxis(2), OIConstants.kDriveDeadband),
+          //  ()->MathUtil.applyDeadband(xboxcontroller.getRightTriggerAxis(), OIConstants.kDriveDeadband),
+          //  ()->MathUtil.applyDeadband(xboxcontroller.getRightX(), OIConstants.kDriveDeadband)
+          //  ));
         //If it doesn't work, try this:
         // new DefaultDrive(m_robotDrive,
         //  ()->MathUtil.applyDeadband(xboxcontroller.getLeftX(), OIConstants.kDriveDeadband),
@@ -112,21 +114,24 @@ public class RobotContainer {
    * {@link JoystickButton}.
    */
   private void configureButtonBindings() {
-    // new JoystickButton(xboxcontroller, Button.kR1.value)
-    //     .whileTrue(new RunCommand(
-    //         () -> m_robotDrive.setX(),
-    //         m_robotDrive));
-    new JoystickButton(xboxcontroller, 1).whileTrue(new LineUptoTag(m_robotDrive));
-    new JoystickButton(xboxcontroller, 2).whileTrue(new ShootRing(m_shooter, -0.5)); //Shoot Ring Amp 
+    new JoystickButton(xboxcontroller,1)
+        .whileTrue(new RunCommand(
+            () -> m_robotDrive.setX(),
+            m_robotDrive));
+    // new JoystickButton(xboxcontroller, 1).whileTrue(new RunCommand(()->m_robotDrive.driveX(),m_robotDrive));
+    // new JoystickButton(xboxcontroller, 1).whileTrue(new LineUptoTag(m_robotDrive));
+    // new JoystickButton(xboxcontroller, 1).whileTrue(new DriveDistance(m_robotDrive, Units.inchesToMeters(1), 1));
+    new JoystickButton(xboxcontroller, 2).onTrue(new SpeedUptoShoot(m_shooter, m_feeder, 0.5)); //Shoot Ring Amp 
     new JoystickButton(xboxcontroller, 3).whileTrue(new FeedRing(m_feeder,1));
     new JoystickButton(xboxcontroller, 4).whileTrue(new FeedRing(m_feeder,-1));
-    new JoystickButton(xboxcontroller, 5).whileTrue(new ShootRing(m_shooter, 0.4)); //Load Ring 
-    new JoystickButton(xboxcontroller, 6).whileTrue(new ShootRing(m_shooter, -1)); //Shoot Ring Goal 
-    new JoystickButton(xboxcontroller, 7).whileTrue(new MoveLoader(m_mover, 0.5)); //Drop loader (Might have to flip)
-    new JoystickButton(xboxcontroller, 8).whileTrue(new MoveLoader(m_mover, -0.5)); //Raise Loader (Might have to flip)
+    new JoystickButton(xboxcontroller, 5).whileTrue(new ShootRing(m_shooter, -0.5)); //Load Ring 
+    // new JoystickButton(xboxcontroller, 6).whileTrue(new ShootRing(m_shooter, 1)); //Shoot Ring Goal 
+    new JoystickButton(xboxcontroller, 6).onTrue(new SpeedUptoShoot(m_shooter, m_feeder, 1));
+    new JoystickButton(xboxcontroller, 7).whileTrue(new MoveLoader(m_mover, 0.2)); //Drop loader (Might have to flip)
+    new JoystickButton(xboxcontroller, 8).whileTrue(new MoveLoader(m_mover, -0.2)); //Raise Loader (Might have to flip)
     new JoystickButton(xboxcontroller, 9).whileTrue(new RobotClimb(m_climber, 0.5));
     new JoystickButton(xboxcontroller, 10).whileTrue(new RobotClimb(m_climber, -0.5));
-     // new JoystickButton(xboxcontroller, 2).whileTrue(new RunCommand(()->m_robotDrive.getHeadings(),m_robotDrive));
+     // new JoystickButton(xboxcontroller, 2).whileTrue(new  RunCommand(()->m_robotDrive.getHeadings(),m_robotDrive));
     // new JoystickButton(xboxcontroller, 9).whileTrue(new LineUptoTag(m_robotDrive)); //This will probably be the final button for lining up. Change it to onTrue once it works
   
   }

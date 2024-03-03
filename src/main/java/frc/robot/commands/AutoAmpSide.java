@@ -19,7 +19,7 @@ public class AutoAmpSide extends SequentialCommandGroup {
     addCommands(
       new ShootRing(shooter, 0.5).withTimeout(2),
       new CenterRobot(drivetrain),
-      new DefaultDrive(drivetrain,()->0,()->0.3,()->0,()->0).withTimeout(2.5)
+      new DefaultDrive(drivetrain,()->0,()->0.3,()->0).withTimeout(2.5)
     );
   }
 }

@@ -48,7 +48,7 @@ public class LineUptoTag extends Command {
   public void execute() {
     Update_Limelight();
     // CenterRobot(driveTrain);
-    // driveTrain.drivedistance(Units.inchesToMeters(zdistancefromtag*0.5), 1);
+    driveTrain.drivedistance(Units.inchesToMeters(zdistancefromtag-65.4), 1);
   }
 
   public void Update_Limelight(){
@@ -58,7 +58,7 @@ public class LineUptoTag extends Command {
     SmartDashboard.putNumber("April Tag Id", idnum);
       xoffset=tx.getDouble(0);
       yOffset=ty.getDouble(0);
-      zdistancefromtag=getDistancefromTag(8.5, 50, 15.5, yOffset);//in inches, subject to change
+      zdistancefromtag=getDistancefromTag(19.6, 51.875, 19, yOffset);//in inches, subject to change      xdistancefromtag=zdistancefromtag*Math.tan(Math.toRadians(xoffset));
       xdistancefromtag=zdistancefromtag*Math.tan(Math.toRadians(xoffset));
       SmartDashboard.putNumber("LimelightX", xoffset);
       SmartDashboard.putNumber("Z-distance", zdistancefromtag);

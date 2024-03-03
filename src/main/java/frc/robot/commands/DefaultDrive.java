@@ -14,14 +14,12 @@ public class DefaultDrive extends Command {
   /** Creates a new DefaultDrive. */
   private final DriveSubsystem drivetrain;
   private final DoubleSupplier xvalue;
-  private final DoubleSupplier yleftvalue;
-  private final DoubleSupplier yrightvalue;
+  private final DoubleSupplier yvalue;
   private final DoubleSupplier turnvalue;
-  public DefaultDrive(DriveSubsystem subsystem,DoubleSupplier x,DoubleSupplier ybackward,DoubleSupplier yforward, DoubleSupplier turn) {
+  public DefaultDrive(DriveSubsystem subsystem,DoubleSupplier x,DoubleSupplier y, DoubleSupplier turn) {
     drivetrain=subsystem;
     xvalue=x;
-    yleftvalue=ybackward;
-    yrightvalue=yforward;
+    yvalue=y;
     turnvalue=turn;
     addRequirements(drivetrain);
     // Use addRequirements() here to declare subsystem dependencies.
@@ -40,10 +38,9 @@ public class DefaultDrive extends Command {
     // if (yleftvalue.getAsDouble()>0){
     //   drivetrain.drive(yleftvalue.getAsDouble(), xvalue.getAsDouble(), turnvalue.getAsDouble(), false, true);
     // }
-    double yvalue=yrightvalue.getAsDouble()+yleftvalue.getAsDouble();
     // if (yrightvalue.getAsDouble()==0 && yleftvalue.getAsDouble()==0){
-      drivetrain.drive(-yvalue, xvalue.getAsDouble(), turnvalue.getAsDouble(), false, true);
-      SmartDashboard.putNumber("Trigger Value", yvalue);
+      drivetrain.drive(-yvalue.getAsDouble(), xvalue.getAsDouble(), turnvalue.getAsDouble(), false, true);
+      // SmartDashboard.putNumber("Trigger Value", yvalue);
     // }
   }
 

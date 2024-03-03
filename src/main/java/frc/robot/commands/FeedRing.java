@@ -11,6 +11,7 @@ public class FeedRing extends Command {
   /** Creates a new FeedRing. */
   Feeder feeder;
   double speed;
+  
   public FeedRing(Feeder subsystem,double s) {
     feeder=subsystem;
     speed=s;
@@ -26,6 +27,7 @@ public class FeedRing extends Command {
   @Override
   public void execute() {
     feeder.feed(speed); //Might have to flip
+    // feeder.feedwithencoder(speed);
   }
 
   // Called once the command ends or is interrupted.

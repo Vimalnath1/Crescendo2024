@@ -16,7 +16,7 @@ public class DrivePastLineAutonomous extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new DefaultDrive(drivetrain,()->0,()->0,()->0.3,()->0).withTimeout(2)
+      new DefaultDrive(drivetrain,()->0,()->-0.3,()->0).withTimeout(2)
     );
   }
 }
