@@ -39,7 +39,7 @@ public class DefaultDrive extends Command {
     //   drivetrain.drive(yleftvalue.getAsDouble(), xvalue.getAsDouble(), turnvalue.getAsDouble(), false, true);
     // }
     // if (yrightvalue.getAsDouble()==0 && yleftvalue.getAsDouble()==0){
-      drivetrain.drive(-yvalue.getAsDouble(), xvalue.getAsDouble(), turnvalue.getAsDouble(), false, true);
+      drivetrain.drive(-yvalue.getAsDouble(), xvalue.getAsDouble(), turnvalue.getAsDouble(), false);
       // SmartDashboard.putNumber("Trigger Value", yvalue);
     // }
   }
@@ -47,7 +47,7 @@ public class DefaultDrive extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    drivetrain.drive(0, 0, 0, false, true);
+    drivetrain.drive(0, 0, 0, false);
   }
 
   // Returns true when the command should end.

@@ -15,12 +15,12 @@ public class Mover extends SubsystemBase {
   /** Creates a new Mover. */
   CANSparkMax mover;
   public Mover() {
-    mover=new CANSparkMax(14, MotorType.kBrushless);
+    // mover=new CANSparkMax(14, MotorType.kBrushless);
 
   }
 
   public void move(double speed){
-    mover.set(speed);
+    // mover.set(speed);
   }
   @Override
   public void periodic() {

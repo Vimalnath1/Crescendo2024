@@ -4,6 +4,9 @@
 
 package frc.robot.commands;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ExampleSubsystem;
@@ -28,7 +31,15 @@ public class AutofromCenter extends SequentialCommandGroup {
       
       // new ShootRing(shooter, 1),
       new SpeedUptoShoot(shooter, feeder, 1),
-      new DefaultDrive(drivetrain,()->0,()->-0.3,()->0).withTimeout(0.5)
+      new DefaultDrive(drivetrain,()->0,()->-0.3,()->0).withTimeout(0.5),
+      new DefaultDrive(drivetrain, ()->0,()->-0.3,()->0).withTimeout(1),
+      new DefaultDrive(drivetrain, ()->0,()->0,()->0.3).withTimeout(1.8),
+      
+      new RunCommand(()->drivetrain.zeroHeading(), drivetrain)
+      
+    
     );
   }
 }
+
+

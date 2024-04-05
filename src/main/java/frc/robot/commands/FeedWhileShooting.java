@@ -19,13 +19,13 @@ public class FeedWhileShooting extends ParallelCommandGroup {
     if (speed>0){
     addCommands(
       new ShootRing(shooter, speed).withTimeout(1),
-      new FeedRing(feeder,-1).withTimeout(1) //May have to negate and change times
+      new FeedRing(feeder,-1).withTimeout(0.25) //May have to negate and change times
     );
     }
     else{
       addCommands(
       new ShootRing(shooter, speed).withTimeout(1),
-      new FeedRing(feeder,1).withTimeout(1) //May have to negate and change times
+      new FeedRing(feeder,1).withTimeout(0.25) //May have to negate and change times
     );
     }
   }

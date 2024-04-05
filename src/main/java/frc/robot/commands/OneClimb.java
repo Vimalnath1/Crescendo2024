@@ -5,38 +5,36 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.Climber;
+import java.util.function.DoubleSupplier;
 
-public class DriveDistance extends Command {
-  /** Creates a new DriveDistance. */
-  DriveSubsystem driveTrain;
-  double distanceset;
-  int direction;
-  public DriveDistance(DriveSubsystem subsystem,double meters,int way) {
-    driveTrain=subsystem;
-    distanceset=meters;
-    direction=way;
-    addRequirements(driveTrain);
+public class OneClimb extends Command {
+  /** Creates a new OneClimb. */
+  Climber climber;
+  private double rightspeed=0;
+  private double leftspeed=0;
+  public OneClimb(Climber subsystem,double rs,double ls) {
+    climber=subsystem;
+    rightspeed=rs;
+    leftspeed=ls;
+    addRequirements(climber);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    // driveTrain.drive(0, 0, 0, false, true);
-    // driveTrain.resetEncoders();
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    // driveTrain.drivedistance(distanceset, direction);
+    climber.oneclimber(leftspeed, rightspeed);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    // driveTrain.drivedistance(0, 0);
+    climber.oneclimber(0, 0);
   }
 
   // Returns true when the command should end.

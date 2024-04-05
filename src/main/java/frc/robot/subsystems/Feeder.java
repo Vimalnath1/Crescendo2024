@@ -19,20 +19,22 @@ import frc.robot.Constants.ModuleConstants;
 public class Feeder extends SubsystemBase {
   /** Creates a new Feeder. */
   CANSparkMax feeder;
-  AbsoluteEncoder feederencoder;
-  SparkPIDController feederPIDController;
-  PIDController feedercontrol;
-  DigitalInput leftlimitswitch;
-  DigitalInput rightlimitswitch;
+
+  // AbsoluteEncoder feederencoder;
+  // SparkPIDController feederPIDController;
+  // PIDController feedercontrol;
+  // DigitalInput leftlimitswitch;
+  // DigitalInput rightlimitswitch;
 
   Spark feeder1;
   public Feeder() {
+    // feederspark
     feeder=new CANSparkMax(13, MotorType.kBrushed);
-    leftlimitswitch=new DigitalInput(0);
-    rightlimitswitch=new DigitalInput(2);
+    // leftlimitswitch=new DigitalInput(0);
+    // rightlimitswitch=new DigitalInput(2);
     // rightlimitswitch=new DigitalInput(1);
-    feederencoder=feeder.getAbsoluteEncoder(Type.kDutyCycle);
-    feedercontrol=new PIDController(0.5, ModuleConstants.kTurningI, ModuleConstants.kTurningD);
+    // feederencoder=feeder.getAbsoluteEncoder(Type.kDutyCycle);
+    // feedercontrol=new PIDController(0.5, ModuleConstants.kTurningI, ModuleConstants.kTurningD);
     // feederPIDController.setFeedbackDevice(feederencoder);
 
     // feederencoder.setPositionConversionFactor(ModuleConstants.kTurningEncoderPositionFactor);
@@ -48,30 +50,30 @@ public class Feeder extends SubsystemBase {
     feeder1=new Spark(0);
   }
   public void feed(double speed){
-    if (leftlimitswitch.get()==true && rightlimitswitch.get()==true){
+    // if (leftlimitswitch.get()==true && rightlimitswitch.get()==true){
       feeder.set(speed);
-      feeder1.set(-speed);
-    }
-    else if (leftlimitswitch.get()==false){
-      if (speed>0){
-        feeder.set(0);
-        feeder1.set(0);
-      }
-      else{
-        feeder.set(speed);
-        feeder1.set(-speed);
-      }
-    }
-    else if (rightlimitswitch.get()==false){
-      if (speed<0){
-        feeder.set(0);
-        feeder1.set(0);
-      }
-      else{
-        feeder.set(speed);
-        feeder1.set(-speed);
-      }
-    }
+      feeder1.set(speed);
+    // }
+    // else if (leftlimitswitch.get()==false){
+    //   if (speed>0){
+    //     feeder.set(0);
+    //     feeder1.set(0);
+    //   }
+    //   else{
+    //     feeder.set(speed);
+    //     feeder1.set(speed);
+    //   }
+    // }
+    // else if (rightlimitswitch.get()==false){
+    //   if (speed<0){
+    //     feeder.set(0);
+    //     feeder1.set(0);
+    //   }
+    //   else{
+    //     feeder.set(speed);
+    //     feeder1.set(speed);
+    //   }
+    // }
     // feederPIDController.setReference(angle, CANSparkMax.ControlType.kPosition);
     
     // feeder1.set(speed);

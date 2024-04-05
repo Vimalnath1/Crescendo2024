@@ -29,19 +29,27 @@ import frc.robot.commands.AutofromCenter;
 import frc.robot.commands.CenterRobot;
 import frc.robot.commands.DefaultDrive;
 import frc.robot.commands.DriveDistance;
+import frc.robot.commands.DrivePastLineAutonomous;
 import frc.robot.commands.FeedRing;
 import frc.robot.commands.LineUptoTag;
 import frc.robot.commands.MoveLoader;
+import frc.robot.commands.OneClimb;
 import frc.robot.commands.RobotClimb;
+import frc.robot.commands.RunPiston;
 import frc.robot.commands.ShootRing;
 import frc.robot.commands.SpeedUptoShoot;
 import frc.robot.subsystems.*;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import java.util.List;
 import java.util.function.DoubleSupplier;
+
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.path.PathPlannerPath;
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -57,14 +65,19 @@ public class RobotContainer {
   private final Shooter m_shooter=new Shooter();
   private final Climber m_climber=new Climber();
   private final Feeder m_feeder=new Feeder();
+  private final Pneumatics m_Pneumatics=new Pneumatics();
   private final AutofromCenter m_AutofromCenter=new AutofromCenter(m_robotDrive, m_shooter,m_feeder,m_sub);
-  private final AutoAmpSide m_AutoAmpSide=new AutoAmpSide(m_robotDrive, m_shooter);
-  private final AutoSourceSide m_AutoSourceSide=new AutoSourceSide(m_robotDrive, m_shooter);
+  private final AutoAmpSide m_AutoAmpSide=new AutoAmpSide(m_robotDrive, m_shooter,m_feeder);
+  private final AutoSourceSide m_AutoSourceSide=new AutoSourceSide(m_robotDrive, m_shooter,m_feeder);
+  private final DrivePastLineAutonomous drivePastLineAutonomous=new DrivePastLineAutonomous(m_robotDrive);
   SendableChooser<Command> m_chooser = new SendableChooser<>();
+  SendableChooser<Boolean> m_fieldorno = new SendableChooser<>();
   // The driver's controller
   XboxController xboxcontroller = new XboxController(OIConstants.kDriverControllerPort);
+  CommandXboxController theXboxController=new CommandXboxController(1);
+  CommandXboxController theXboxController2=new CommandXboxController(2);
   Joystick controller = new Joystick(0);
-  PS4Controller controller2=new PS4Controller(2);
+  XboxController controller2=new XboxController(2);
   DoubleSupplier ystick;
 
   /**
@@ -74,9 +87,15 @@ public class RobotContainer {
     // Configure the button bindings
     configureButtonBindings();
     m_chooser.setDefaultOption("Center Auto", m_AutofromCenter);
-    m_chooser.addOption("Amp Side Auto", m_AutoAmpSide);
-    m_chooser.addOption("Source Side Auto", m_AutoSourceSide);
+    m_chooser.addOption("Blue Amp, Red Source", m_AutoAmpSide);
+    m_chooser.addOption("Blue Sourcem, Red Amp", m_AutoSourceSide);
+    m_chooser.addOption("Drive Forward", drivePastLineAutonomous);
+    
+    m_fieldorno.setDefaultOption("True", true);
+    m_fieldorno.addOption("False", false);
     SmartDashboard.putData(m_chooser);
+    SmartDashboard.putData(m_fieldorno);
+    // putBoolean("null", false);
     // Configure default commands
     m_robotDrive.setDefaultCommand(
         // The left stick controls translation of the robot.
@@ -86,8 +105,14 @@ public class RobotContainer {
                 MathUtil.applyDeadband(xboxcontroller.getLeftY(), OIConstants.kDriveDeadband),
                 MathUtil.applyDeadband(xboxcontroller.getLeftX(), OIConstants.kDriveDeadband),
                 MathUtil.applyDeadband(xboxcontroller.getRightX(), OIConstants.kDriveDeadband),
-                false, true),
+                m_fieldorno.getSelected()),
             m_robotDrive));
+      // m_climbe
+      // .setDefaultCommand(
+        // new OneClimb(m_climber, xboxcontroller.getRightTriggerAxis(), ()->xboxcontroller.getLeftTriggerAxis())
+        // );
+        
+        
         //Test driving with triggers
           // new DefaultDrive(m_robotDrive,
           //  ()->MathUtil.applyDeadband(xboxcontroller.getLeftX(), OIConstants.kDriveDeadband),
@@ -119,18 +144,27 @@ public class RobotContainer {
             () -> m_robotDrive.setX(),
             m_robotDrive));
     // new JoystickButton(xboxcontroller, 1).whileTrue(new RunCommand(()->m_robotDrive.driveX(),m_robotDrive));
-    // new JoystickButton(xboxcontroller, 1).whileTrue(new LineUptoTag(m_robotDrive));
+    new JoystickButton(xboxcontroller, 1).whileTrue(new LineUptoTag(m_robotDrive));
     // new JoystickButton(xboxcontroller, 1).whileTrue(new DriveDistance(m_robotDrive, Units.inchesToMeters(1), 1));
     new JoystickButton(xboxcontroller, 2).onTrue(new SpeedUptoShoot(m_shooter, m_feeder, 0.5)); //Shoot Ring Amp 
-    new JoystickButton(xboxcontroller, 3).whileTrue(new FeedRing(m_feeder,1));
-    new JoystickButton(xboxcontroller, 4).whileTrue(new FeedRing(m_feeder,-1));
+    new JoystickButton(controller2, 3).whileTrue(new FeedRing(m_feeder,1));
+    new JoystickButton(controller2, 4).whileTrue(new FeedRing(m_feeder,-1));
     new JoystickButton(xboxcontroller, 5).whileTrue(new ShootRing(m_shooter, -0.5)); //Load Ring 
     // new JoystickButton(xboxcontroller, 6).whileTrue(new ShootRing(m_shooter, 1)); //Shoot Ring Goal 
     new JoystickButton(xboxcontroller, 6).onTrue(new SpeedUptoShoot(m_shooter, m_feeder, 1));
-    new JoystickButton(xboxcontroller, 7).whileTrue(new MoveLoader(m_mover, 0.2)); //Drop loader (Might have to flip)
-    new JoystickButton(xboxcontroller, 8).whileTrue(new MoveLoader(m_mover, -0.2)); //Raise Loader (Might have to flip)
-    new JoystickButton(xboxcontroller, 9).whileTrue(new RobotClimb(m_climber, 0.5));
-    new JoystickButton(xboxcontroller, 10).whileTrue(new RobotClimb(m_climber, -0.5));
+    // new JoystickButton(xboxcontroller, 9).whileTrue(new MoveLoader(m_mover, 0.2)); //Drop loader (Might have to flip)
+    // new JoystickButton(xboxcontroller, 10).whileTrue(new MoveLoader(m_mover, -0.2)); //Raise Loader (Might have to flip)
+    
+    theXboxController.povUp().whileTrue(new RobotClimb(m_climber, -1));
+    theXboxController.povDown().whileTrue(new RobotClimb(m_climber, 1));
+    new JoystickButton(xboxcontroller,7).whileTrue(new RunPiston(m_Pneumatics));
+    new JoystickButton(controller2,7).whileTrue(new RunPiston(m_Pneumatics));
+    new JoystickButton(xboxcontroller,8).whileTrue(new RunCommand(() -> m_robotDrive.zeroHeading(),m_robotDrive));
+   
+    new JoystickButton(controller2, 5).whileTrue(new OneClimb(m_climber, 0, 1));
+    new JoystickButton(controller2, 6).whileTrue(new OneClimb(m_climber, -1, 0));
+    theXboxController2.leftTrigger().whileTrue(new OneClimb(m_climber, 0, -1));
+    theXboxController2.rightTrigger().whileTrue(new OneClimb(m_climber, 1, 0));
      // new JoystickButton(xboxcontroller, 2).whileTrue(new  RunCommand(()->m_robotDrive.getHeadings(),m_robotDrive));
     // new JoystickButton(xboxcontroller, 9).whileTrue(new LineUptoTag(m_robotDrive)); //This will probably be the final button for lining up. Change it to onTrue once it works
   
@@ -142,16 +176,12 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    // double whichauto=SmartDashboard.getNumber("Autonomous Chooser", 2);
-    // if (Math.floor(whichauto)==1){
-    //   return m_AutoAmpSide;
-    // }
-    // else if (Math.floor(whichauto)==2){   //Test these they may not work
-    //   return m_AutofromCenter;
-    // }
-    // else{
-    //   return m_AutoSourceSide;
-    // }
+    PathPlannerPath path= PathPlannerPath.fromPathFile("Align to Shooter");
+    // List<PathPlannerPath> auto=PathPlannerAuto.getPathGroupFromAutoFile("Path Testing");
+    // Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
+    //   auto,List.of(new Translation2d(7, 0),new Translation2d(7, 0)),new Pose2d(7, 0, new Rotation2d(0)));
+    // return AutoBuilder.buildAuto("Path Testing");
+    // return AutoBuilder.followPath(path);
     return m_chooser.getSelected();
     // // An example trajectory to follow. All units in meters.
     // Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(

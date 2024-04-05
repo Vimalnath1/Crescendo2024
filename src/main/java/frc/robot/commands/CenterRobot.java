@@ -35,13 +35,13 @@ public class CenterRobot extends Command {
     double angle=Math.toRadians(driveTrain.m_gyro.getAngle(ADIS16470_IMU.IMUAxis.kYaw)*(Math.PI/180));
     double speed=turnpid.calculate(angle);
     // double speed=1.0;
-    driveTrain.drive(0, 0, speed, false, true);
+    driveTrain.drive(0, 0, speed, false);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    driveTrain.drive(0, 0, 0, false, true);
+    driveTrain.drive(0, 0, 0, false);
   }
 
   // Returns true when the command should end.

@@ -12,6 +12,7 @@ public class ShootRing extends Command {
   Shooter shooter;
   private double speed;
 
+
   public ShootRing(Shooter subsystem, double s) {
     shooter=subsystem;
     speed=s;

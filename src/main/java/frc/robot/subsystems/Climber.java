@@ -22,9 +22,18 @@ public class Climber extends SubsystemBase {
     leftclimber.set(speed);
     rightclimber.set(-speed);
   }
+  
+  public void oneclimber(double leftspeed,double rightspeed){
+    leftclimber.set(leftspeed);
+    rightclimber.set(-rightspeed);
+  }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
   }
+
+
+
+
 }

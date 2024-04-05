@@ -40,15 +40,17 @@ public class LineUptoTag extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    driveTrain.resetEncoders();
     Update_Limelight();
+    
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    Update_Limelight();
+    // Update_Limelight();
     // CenterRobot(driveTrain);
-    driveTrain.drivedistance(Units.inchesToMeters(zdistancefromtag-65.4), 1);
+    driveTrain.drivedistance(-Units.inchesToMeters(xdistancefromtag), 0);
   }
 
   public void Update_Limelight(){
@@ -58,7 +60,7 @@ public class LineUptoTag extends Command {
     SmartDashboard.putNumber("April Tag Id", idnum);
       xoffset=tx.getDouble(0);
       yOffset=ty.getDouble(0);
-      zdistancefromtag=getDistancefromTag(19.6, 51.875, 19, yOffset);//in inches, subject to change      xdistancefromtag=zdistancefromtag*Math.tan(Math.toRadians(xoffset));
+      zdistancefromtag=getDistancefromTag(13.5, 51.875, 19, yOffset);//in inches, subject to change      xdistancefromtag=zdistancefromtag*Math.tan(Math.toRadians(xoffset));
       xdistancefromtag=zdistancefromtag*Math.tan(Math.toRadians(xoffset));
       SmartDashboard.putNumber("LimelightX", xoffset);
       SmartDashboard.putNumber("Z-distance", zdistancefromtag);
@@ -85,7 +87,7 @@ public class LineUptoTag extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    driveTrain.drive(0, 0, 0, false,true);
+    driveTrain.drive(0, 0, 0, false);
   }
 
   // Returns true when the command should end.
